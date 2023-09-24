@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Emergency Service</h1>
+    <h2>Report an Emergency</h2>
+    <form method="POST">
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required></textarea><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <h2>Emergency Reports</h2>
+    <ul>
+        {% for report in reports %}
+        <li>
+            <strong>Location:</strong> {{ report.location }}<br>
+            <strong>Description:</strong> {{ report.description }}
+        </li>
+        {% endfor %}
+    </ul>
+
+    <h2>Basic First Aid Tips</h2>
+    <button id="get-tips">Get First Aid Tips</button>
+    <ul id="first-aid-tips">
+        <!-- First aid tips will be displayed here -->
+    </ul>
+
+    <script>
+        document.getElementById('get-tips').addEventListener('click', function () {
+            fetch('/api/first_aid_tips')
+                .then(response => response.json())
+                .then(data => {
+                    const tips = data.first_aid_tips;
+                    const tipsList = document.getElementById('first-aid-tips');
+                    tipsList.innerHTML = '';
+                    tips.forEach(tip => {
+                        const li = document.createElement('li');
+                        li.textContent = tip;
+                        tipsList.appendChild(li);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
